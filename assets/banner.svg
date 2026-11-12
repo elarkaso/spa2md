@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="400" viewBox="0 0 1280 400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E1B4B"/><stop offset="1" stop-color="#0F3B3A"/>
+    </linearGradient>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#fff" fill-opacity=".07"/>
+    </pattern>
+  </defs>
+  <rect width="1280" height="400" fill="url(#bg)"/>
+  <rect width="1280" height="400" fill="url(#dots)"/>
+  <svg x="110" y="80" width="240" height="240" viewBox="0 0 256 256">
+  <defs>
+    <linearGradient id="lbg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#4F46E5"/><stop offset="1" stop-color="#0EA5A4"/>
+    </linearGradient>
+  </defs>
+  <rect width="256" height="256" rx="56" fill="url(#lbg)"/>
+  <!-- okno prohlížeče (SPA) -->
+  <g transform="translate(30 58)">
+    <rect width="110" height="92" rx="12" fill="#fff" fill-opacity=".16" stroke="#fff" stroke-width="5"/>
+    <line x1="0" y1="24" x2="110" y2="24" stroke="#fff" stroke-width="5"/>
+    <circle cx="15" cy="12" r="4" fill="#fff"/><circle cx="29" cy="12" r="4" fill="#fff"/>
+    <path d="M42 44 L28 58 L42 72 M68 44 L82 58 L68 72" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <!-- šipka -->
+  <path d="M150 104 h22 m-9 -10 l11 10 -11 10" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- markdown dokument -->
+  <g transform="translate(150 118)">
+    <path d="M0 10 a10 10 0 0 1 10 -10 h44 l22 22 v68 a10 10 0 0 1 -10 10 h-56 a10 10 0 0 1 -10 -10z" fill="#fff"/>
+    <path d="M54 0 v16 a6 6 0 0 0 6 6 h16" fill="#C7D2FE"/>
+    <text x="10" y="44" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="26" font-weight="700" fill="#4F46E5">#</text>
+    <rect x="30" y="27" width="30" height="7" rx="3.5" fill="#4F46E5"/>
+    <rect x="10" y="56" width="52" height="6" rx="3" fill="#94A3B8"/>
+    <rect x="10" y="70" width="40" height="6" rx="3" fill="#94A3B8"/>
+    <rect x="10" y="84" width="48" height="6" rx="3" fill="#0EA5A4"/>
+  </g>
+</svg>
+  <text x="410" y="190" font-family="ui-sans-serif,-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif" font-size="112" font-weight="800" fill="#fff" letter-spacing="-2">spa<tspan fill="#5EEAD4">2</tspan>md</text>
+  <text x="414" y="250" font-family="ui-sans-serif,-apple-system,'Segoe UI',Inter,Helvetica,Arial,sans-serif" font-size="32" fill="#C7D2FE">Webové učebnice a dokumentace do Markdownu</text>
+  <g font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="22" fill="#E0E7FF">
+    <rect x="414" y="282" width="128" height="40" rx="20" fill="#fff" fill-opacity=".1"/><text x="438" y="309">React</text>
+    <rect x="554" y="282" width="140" height="40" rx="20" fill="#fff" fill-opacity=".1"/><text x="578" y="309">obrázky</text>
+    <rect x="706" y="282" width="152" height="40" rx="20" fill="#fff" fill-opacity=".1"/><text x="730" y="309">diagramy</text>
+    <rect x="870" y="282" width="100" height="40" rx="20" fill="#fff" fill-opacity=".1"/><text x="894" y="309">kód</text>
+    <rect x="982" y="282" width="176" height="40" rx="20" fill="#fff" fill-opacity=".1"/><text x="1006" y="309">přihlášení</text>
+  </g>
+</svg>

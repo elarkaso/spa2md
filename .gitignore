@@ -1,0 +1,18 @@
+# prostředí
+.venv/
+__pycache__/
+*.pyc
+
+# profil prohlížeče – obsahuje přihlašovací cookies, NIKDY necommitovat
+.browser-profile/
+chrome-debug/
+
+# stažený obsah (autorská práva patří autorům)
+ucebnice_md/
+ucebnice*/
+kniha/
+test/
+inspect.html
+*.md.bak
+
+.DS_Store
