@@ -73,7 +73,7 @@ Skript dělá to samé, co bys dělal ručně, jen automaticky a rychle:
 | `-o SLOŽKA` | Kam uložit výsledek (výchozí `ucebnice_md`). |
 | `--inspect` | Nic nestahuje. Jen vypíše, kde na první stránce leží obsah, a uloží `inspect.html`. Hodí se k ladění. |
 | `--max-pages N` | Stáhne nejvýš N stránek. Na zkoušku použij `--max-pages 3`. |
-| `--scope URL` | Stahovat jen adresy začínající tímto prefixem. Výchozí je „složka" startovní adresy. |
+| `--scope URL` | Stahovat jen adresy pod touto adresou: stejný web a cesta po celých částech mezi `/` (`/kurz` zahrne `/kurz/lekce`, ale ne `/kurz-stary`). Výchozí je „složka" startovní adresy. |
 | `--selector CSS` | Ruční určení kontejneru s obsahem (když automatika netrefí). |
 | `--remove CSS` | Prvky, které se mají z obsahu vyhodit. Lze opakovat. |
 | `--links-selector CSS` | Odkud brát odkazy na další stránky, např. `"nav a[href]"`. |
@@ -135,7 +135,7 @@ Diagramy jsou obrázky, ne upravitelný text.
 |---|---|
 | Výsledné `.md` obsahují jen menu | Spusť `--inspect` a vezmi selektor z výpisu: `--selector "…"`. |
 | Chybí část obsahu | Zvyš `--settle 3` nebo použij `--wait-for "css-prvku-s-obsahem"`. |
-| HTTP 400 / 404 hned na první stránce | Zkontroluj adresu. Používej jednoduché uvozovky a žádné `\` v URL. |
+| HTTP 400 / 404 hned na první stránce | Zkontroluj adresu. Používej jednoduché uvozovky a žádné `\` v URL. Stránky s chybou HTTP (4xx/5xx) se nikdy neuloží, jen se vypíšou s `!` a jejich počet je na konci běhu. |
 | Stáhne se jen jedna stránka | Odkazy na kapitoly nejsou `<a href>`, nebo jsou mimo `--scope`. |
 | Google hlásí „Tento prohlížeč není bezpečný" | Použij režim `--cdp` (viz výše). |
 | „robots.txt tohoto webu … zakazuje" | Web si nepřeje automatické procházení. Pokud jde o obsah, ke kterému máš právo, použij vědomě `--ignore-robots`. |

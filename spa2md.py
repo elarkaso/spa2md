@@ -317,6 +317,25 @@ def norm(url):
     return base.rstrip("/") if urlparse(base).path not in ("", "/") else base
 
 
+def _under(path, base):
+    """path leží v base po celých segmentech: /kurz pokryje /kurz i /kurz/x, ne /kurz-2."""
+    base = base.rstrip("/")
+    return path == base or path.startswith(base + "/")
+
+
+def in_scope(url, scope):
+    """URL patří do rozsahu: stejné schéma i host a cesta pod cestou scope.
+    Pokud scope míří na hash-route (#/cesta), musí pod ni spadat i hash-route URL."""
+    u, s = urlparse(url), urlparse(scope)
+    if (u.scheme.lower(), u.netloc.lower()) != (s.scheme.lower(), s.netloc.lower()):
+        return False
+    if not _under(u.path, s.path):
+        return False
+    if s.fragment.startswith(("/", "!/")):
+        return _under(u.fragment.lstrip("!"), s.fragment.lstrip("!"))
+    return True
+
+
 def slug_for(url, base):
     p = urlparse(url)
     path = unquote(p.path)
@@ -494,8 +513,16 @@ def pick_content(soup, selector):
     return soup.body or soup
 
 
+class HttpError(Exception):
+    pass
+
+
 def render(page, url, a, img_dir=None):
-    page.goto(url, wait_until="domcontentloaded", timeout=60000)
+    resp = page.goto(url, wait_until="domcontentloaded", timeout=60000)
+    # chybová stránka (404, 500, 403…) se jinak vykreslí a uloží jako kapitola;
+    # resp je None u navigace jen v rámci dokumentu (hash-routing) – status pak neznáme
+    if resp is not None and resp.status >= 400:
+        raise HttpError(f"HTTP {resp.status} {resp.status_text}".rstrip())
     try:
         page.wait_for_load_state("networkidle", timeout=15000)
     except PWTimeout:
@@ -550,7 +577,8 @@ def main():
     ap.add_argument("--cdp", help="připojit se k běžícímu Chrome, např. http://localhost:9222")
     ap.add_argument("--profile", default=".browser-profile", help="adresář trvalého profilu")
     ap.add_argument("--no-login-prompt", action="store_true", help="nečekat na ruční přihlášení")
-    ap.add_argument("--scope", help="stahovat jen URL s tímto prefixem (výchozí: adresář start URL)")
+    ap.add_argument("--scope", help="stahovat jen URL pod touto adresou: stejný host, cesta po celých "
+                                    "segmentech (/kurz nezahrne /kurz-2); výchozí: adresář start URL")
     ap.add_argument("--selector", help="CSS selektor kontejneru s obsahem")
     ap.add_argument("--remove", action="append", default=[], help="CSS selektory k odstranění")
     ap.add_argument("--links-selector", default="a[href]",
@@ -586,6 +614,10 @@ def main():
     else:
         pth = pu.path if pu.path.endswith("/") else pu.path.rsplit("/", 1)[0] + "/"
         scope = f"{pu.scheme}://{pu.netloc}{pth}"
+    s = urlparse(scope)
+    if not (s.scheme and s.netloc) or s.query:
+        ap.error("--scope musí být celá adresa se schématem a hostem, bez ?parametrů "
+                 "(např. https://web.cz/kniha/)")
     scope_n = scope.rstrip("/")
 
     if a.delay < 0.5:
@@ -631,7 +663,13 @@ def main():
                     return
 
         if a.inspect:
-            final_url, html = render(page, start, a, img_dir)
+            try:
+                final_url, html = render(page, start, a, img_dir)
+            except HttpError as e:
+                print(f"\n! {start}: {e}", file=sys.stderr)
+                if not a.cdp:
+                    ctx.close()
+                return
             with open(os.path.join(a.out, "inspect.html"), "w", encoding="utf-8") as f:
                 f.write(html)
             soup = BeautifulSoup(html, "lxml")
@@ -655,7 +693,7 @@ def main():
             if not a.cdp:
                 ctx.close()
             return
-        skipped = 0
+        skipped, failed = 0, 0
 
         # 1) crawl
         queue, seen, rendered, order = deque([start]), {start}, {}, []
@@ -666,6 +704,7 @@ def main():
                 final_url, html = render(page, url, a, img_dir)
             except Exception as e:
                 print(f"  ! {e}", file=sys.stderr)
+                failed += 1
                 continue
             soup = BeautifulSoup(html, "lxml")
             rendered[url] = (final_url, soup)
@@ -675,7 +714,7 @@ def main():
                 if not href or href.startswith(("mailto:", "tel:", "javascript:")):
                     continue
                 nxt = norm(urljoin(final_url, href))
-                if (nxt.startswith(scope_n) and nxt not in seen
+                if (in_scope(nxt, scope) and nxt not in seen
                         and not nxt.lower().split("#")[0].endswith(SKIP_EXT)):
                     seen.add(nxt)
                     if allowed(nxt):
@@ -744,6 +783,8 @@ def main():
                   "> Obsah patří jeho autorům. Kopie je určena jen pro osobní potřebu, nešiř ji.\n\n")
         if skipped:
             print(f"Vynecháno kvůli robots.txt: {skipped} stránek")
+        if failed:
+            print(f"Nestaženo kvůli chybám (viz '!' výše): {failed} stránek", file=sys.stderr)
         with open(os.path.join(a.out, "index.md"), "w", encoding="utf-8") as f:
             f.write("# Obsah\n\n" + notice)
             for slug, title, _ in book:
