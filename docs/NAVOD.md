@@ -79,7 +79,7 @@ V prohlížeči otevři učebnici na **první stránce nebo obsahu**. Zkopíruj 
 https://web.cz/kniha/page?code=home
 ```
 
-Skript bude stahovat všechny stránky, jejichž adresa začíná stejně jako tahle, až po poslední `/`. V příkladu tedy vše pod `https://web.cz/kniha/`.
+Skript bude stahovat všechny stránky z téhož webu, které leží ve stejné „složce" jako tahle (vše do poslední `/`). V příkladu tedy vše pod `https://web.cz/kniha/`, ale ne třeba `https://web.cz/kniha-stara/`.
 
 > ⚖️ Stahuj jen materiály, ke kterým máš přístup a právo, a staženou kopii nikomu nešiř. Je jen pro tvoji osobní potřebu.
 
